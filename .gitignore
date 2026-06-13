@@ -48,3 +48,22 @@ server/uploads/
 **/任务提示词.md
 任务提示词.md
 **/任务提示词.md
+
+# Runtime/cache directories
+cache/
+**/cache/
+tmp/
+**/tmp/
+temp/
+**/temp/
+.tmp/
+**/.tmp/
+.eslintcache
+*.cache
+*.bak
+*.swp
+
+# Additional generated/binary artifacts
+*.exe
+*.dll
+*.bin
