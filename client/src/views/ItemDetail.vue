@@ -49,6 +49,22 @@
           </div>
         </div>
 
+        <div style="margin-bottom:20px;">
+          <h4 style="margin-bottom:8px;color:#666;">成色与完整度</h4>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span v-if="item.condition" class="badge badge-condition"
+                  :class="'badge-condition-' + getConditionClass(item.condition)"
+                  style="font-size:13px;padding:6px 14px;">
+              {{ item.condition }}
+            </span>
+            <span v-if="item.completeness" class="badge badge-completeness"
+                  style="font-size:13px;padding:6px 14px;">
+              {{ item.completeness }}
+            </span>
+            <span v-if="!item.condition && !item.completeness" style="color:#999;font-size:13px;">未填写</span>
+          </div>
+        </div>
+
         <div v-if="item.revealInfo && item.description" style="margin-bottom:20px;">
           <h4 style="margin-bottom:8px;color:#666;">详细描述</h4>
           <p style="color:#444;line-height:1.6;">{{ item.description }}</p>
@@ -152,6 +168,18 @@ const availableItems = computed(function() {
 
 function getCategoryName(key) {
   return categories[key] || key
+}
+
+function getConditionClass(condition) {
+  var map = {
+    '全新': 'new',
+    '九五成新': 'like-new',
+    '九成新': 'good',
+    '八成新': 'fair',
+    '七成新及以下': 'poor',
+    '有瑕疵': 'flawed'
+  }
+  return map[condition] || 'good'
 }
 
 async function loadItem() {

@@ -35,6 +35,13 @@
         </div>
         <div style="padding:16px;">
           <h3 style="margin-bottom:8px;font-size:16px;">{{ item.realName }}</h3>
+          <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+            <span v-if="item.condition" class="badge badge-condition"
+                  :class="'badge-condition-' + getConditionClass(item.condition)">
+              {{ item.condition }}
+            </span>
+            <span v-if="item.completeness" class="badge badge-completeness">{{ item.completeness }}</span>
+          </div>
           <div style="margin-bottom:8px;">
             <span v-for="tag in item.mysteryTags" :key="tag" class="tag">
               {{ tag }}
@@ -46,6 +53,9 @@
           <div style="display:flex;gap:8px;">
             <router-link :to="'/item/' + item.id" style="flex:1;">
               <button class="btn btn-secondary" style="width:100%;">查看详情</button>
+            </router-link>
+            <router-link v-if="item.status === 'available'" :to="'/edit/' + item.id">
+              <button class="btn btn-edit">编辑</button>
             </router-link>
             <button
               v-if="item.status === 'available'"
@@ -68,6 +78,18 @@ import { userStore } from '../store/user.js'
 
 const items = ref([])
 const loading = ref(true)
+
+function getConditionClass(condition) {
+  var map = {
+    '全新': 'new',
+    '九五成新': 'like-new',
+    '九成新': 'good',
+    '八成新': 'fair',
+    '七成新及以下': 'poor',
+    '有瑕疵': 'flawed'
+  }
+  return map[condition] || 'good'
+}
 
 async function loadItems() {
   loading.value = true

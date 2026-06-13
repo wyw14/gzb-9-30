@@ -91,7 +91,9 @@ app.get('/api/items', (req, res) => {
     mysteryTags: item.mysteryTags,
     image: getPublicImage(item),
     createdAt: item.createdAt,
-    status: item.status
+    status: item.status,
+    condition: item.condition || '',
+    completeness: item.completeness || ''
   }));
 
   res.json(publicItems);
@@ -173,12 +175,14 @@ app.get('/api/items/:id', (req, res) => {
     image: getPublicImage(item),
     createdAt: item.createdAt,
     status: item.status,
+    condition: item.condition || '',
+    completeness: item.completeness || '',
     revealInfo: false
   });
 });
 
 app.post('/api/items', upload.single('image'), async (req, res) => {
-  const { category, mysteryTags, realName, description, contact, ownerId, ownerName } = req.body;
+  const { category, mysteryTags, realName, description, contact, ownerId, ownerName, condition, completeness } = req.body;
 
   if (!category || !mysteryTags || !realName || !contact || !ownerId) {
     if (req.file) {
@@ -208,6 +212,8 @@ app.post('/api/items', upload.single('image'), async (req, res) => {
     realName,
     description: description || '',
     contact,
+    condition: condition || '',
+    completeness: completeness || '',
     image: '/uploads/' + req.file.filename,
     blurredImage: blurredImagePath,
     ownerId,
@@ -220,6 +226,70 @@ app.post('/api/items', upload.single('image'), async (req, res) => {
   writeItems(items);
 
   res.status(201).json(newItem);
+});
+
+app.put('/api/items/:id', upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const { category, mysteryTags, realName, description, contact, ownerId, condition, completeness } = req.body;
+
+  if (!ownerId) {
+    return res.status(400).json({ error: '缺少用户ID' });
+  }
+
+  const items = readItems();
+  const itemIndex = items.findIndex(i => i.id === id);
+
+  if (itemIndex === -1) {
+    return res.status(404).json({ error: '物品不存在' });
+  }
+
+  const item = items[itemIndex];
+
+  if (item.ownerId !== ownerId) {
+    return res.status(403).json({ error: '无权限编辑' });
+  }
+
+  if (item.status !== 'available') {
+    return res.status(400).json({ error: '物品正在交换中，无法编辑' });
+  }
+
+  if (category) items[itemIndex].category = category;
+  if (mysteryTags) items[itemIndex].mysteryTags = JSON.parse(mysteryTags);
+  if (realName) items[itemIndex].realName = realName;
+  if (description !== undefined) items[itemIndex].description = description;
+  if (contact) items[itemIndex].contact = contact;
+  if (condition !== undefined) items[itemIndex].condition = condition;
+  if (completeness !== undefined) items[itemIndex].completeness = completeness;
+
+  if (req.file) {
+    const originalFilePath = path.join(UPLOADS_DIR, path.basename(item.image));
+    const blurredFilePath = item.blurredImage
+      ? path.join(UPLOADS_DIR, path.basename(item.blurredImage))
+      : null;
+
+    try {
+      if (fs.existsSync(originalFilePath)) fs.unlinkSync(originalFilePath);
+    } catch (e) { console.error('删除旧原图失败:', e); }
+
+    try {
+      if (blurredFilePath && fs.existsSync(blurredFilePath)) fs.unlinkSync(blurredFilePath);
+    } catch (e) { console.error('删除旧模糊图失败:', e); }
+
+    let blurredImagePath;
+    try {
+      blurredImagePath = await generateBlurredImage(req.file.path);
+    } catch (err) {
+      console.error('生成模糊图片失败:', err);
+      try { fs.unlinkSync(req.file.path); } catch (e) {}
+      return res.status(500).json({ error: '图片处理失败' });
+    }
+
+    items[itemIndex].image = '/uploads/' + req.file.filename;
+    items[itemIndex].blurredImage = blurredImagePath;
+  }
+
+  writeItems(items);
+  res.json(items[itemIndex]);
 });
 
 app.post('/api/exchanges', (req, res) => {

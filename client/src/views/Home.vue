@@ -40,6 +40,13 @@
           </div>
           <div style="padding:16px;">
             <h3 style="margin-bottom:8px;font-size:16px;">{{ getCategoryName(item.category) }}</h3>
+            <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;">
+              <span v-if="item.condition" class="badge badge-condition"
+                    :class="'badge-condition-' + getConditionClass(item.condition)">
+                {{ item.condition }}
+              </span>
+              <span v-if="item.completeness" class="badge badge-completeness">{{ item.completeness }}</span>
+            </div>
             <div style="margin-bottom:8px;">
               <span v-for="tag in item.mysteryTags" :key="tag" class="tag">
                 {{ tag }}
@@ -74,6 +81,18 @@ const categories = {
 
 function getCategoryName(key) {
   return categories[key] || key
+}
+
+function getConditionClass(condition) {
+  var map = {
+    '全新': 'new',
+    '九五成新': 'like-new',
+    '九成新': 'good',
+    '八成新': 'fair',
+    '七成新及以下': 'poor',
+    '有瑕疵': 'flawed'
+  }
+  return map[condition] || 'good'
 }
 
 function formatDate(dateStr) {

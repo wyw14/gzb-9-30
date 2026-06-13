@@ -173,6 +173,55 @@ label {
   color: #004085;
 }
 
+.badge-condition {
+  font-size: 11px;
+}
+
+.badge-condition-new {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-condition-like-new {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-condition-good {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-condition-fair {
+  background: #ffeaa7;
+  color: #6c5ce7;
+}
+
+.badge-condition-poor {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-condition-flawed {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.badge-completeness {
+  background: #e8daef;
+  color: #6c3483;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-edit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .empty-state {
   text-align: center;
   padding: 60px 20px;
