@@ -57,11 +57,14 @@
                   style="font-size:13px;padding:6px 14px;">
               {{ item.condition }}
             </span>
+            <span v-else class="badge badge-condition badge-condition-unknown"
+                  style="font-size:13px;padding:6px 14px;">成色未知</span>
             <span v-if="item.completeness" class="badge badge-completeness"
                   style="font-size:13px;padding:6px 14px;">
               {{ item.completeness }}
             </span>
-            <span v-if="!item.condition && !item.completeness" style="color:#999;font-size:13px;">未填写</span>
+            <span v-else class="badge badge-completeness badge-completeness-unknown"
+                  style="font-size:13px;padding:6px 14px;">完整度未知</span>
           </div>
         </div>
 

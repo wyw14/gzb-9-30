@@ -163,6 +163,14 @@ async function handleSubmit() {
     alert('请至少填写一个神秘标签')
     return
   }
+  if (!form.value.condition) {
+    alert('请选择物品成色')
+    return
+  }
+  if (!form.value.completeness) {
+    alert('请选择包装/配件完整度')
+    return
+  }
   if (!isEdit.value && !imageFile.value) {
     alert('请上传物品图片')
     return

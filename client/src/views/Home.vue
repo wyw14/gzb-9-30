@@ -45,7 +45,9 @@
                     :class="'badge-condition-' + getConditionClass(item.condition)">
                 {{ item.condition }}
               </span>
+              <span v-else class="badge badge-condition badge-condition-unknown">成色未知</span>
               <span v-if="item.completeness" class="badge badge-completeness">{{ item.completeness }}</span>
+              <span v-else class="badge badge-completeness badge-completeness-unknown">完整度未知</span>
             </div>
             <div style="margin-bottom:8px;">
               <span v-for="tag in item.mysteryTags" :key="tag" class="tag">

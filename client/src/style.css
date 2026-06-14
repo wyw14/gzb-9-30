@@ -207,9 +207,19 @@ label {
   color: #383d41;
 }
 
+.badge-condition-unknown {
+  background: #f0f0f0;
+  color: #999;
+}
+
 .badge-completeness {
   background: #e8daef;
   color: #6c3483;
+}
+
+.badge-completeness-unknown {
+  background: #f0f0f0;
+  color: #999;
 }
 
 .btn-edit {
